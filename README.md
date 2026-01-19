@@ -11,8 +11,7 @@ Teknik:
 
 \*Installation\*
 Öppna terminalen och kör:
--npm install
+-Gå till mappen vart du lagt koden från github
+-npm install --save apexcharts
+-npm install --save vue3-apexcharts
 -npm run dev
-Sedan kör:
--http://localhost:5173
-i din webbläsare
