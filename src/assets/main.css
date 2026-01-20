@@ -9,6 +9,14 @@ body {
   align-items: center;
   text-align: center;
   min-height: center;
+  font-size: 20px;
+  /* Ökad från 18px för bättre läsbarhet */
+}
+
+h2 {
+  font-size: 1.5rem;
+  /* Tydligare rubrikstorlek */
+  margin-bottom: 1.5rem;
 }
 
 input {
@@ -32,7 +40,7 @@ a,
 .inputs {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.75rem;
   align-items: center;
 }
 
@@ -40,4 +48,17 @@ a,
   display: flex;
   justify-content: space-between;
   width: 200px;
+}
+
+/* Responsiv anpassning för mobil */
+@media (max-width: 768px) {
+  body {
+    padding: 1rem;
+    font-size: 18px;
+  }
+
+  h2 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
 }

@@ -9,6 +9,7 @@ export default {
     return {
       temperatures: {},
       loading: false,
+      chartWidth: '100%', // Dynamisk bredd
     }
   },
 
@@ -29,9 +30,19 @@ export default {
     },
 
     chartOptions() {
+      const isMobile = window.innerWidth <= 768
+
       return {
-        chart: { zoom: { enabled: false } },
-        title: { text: 'Max & Min temperatur (°C)' },
+        chart: {
+          zoom: { enabled: false },
+          toolbar: { show: !isMobile }, // Dölj toolbar på mobil
+        },
+        title: {
+          text: 'Max & Min temperatur (°C)',
+          style: {
+            fontSize: isMobile ? '16px' : '18px',
+          },
+        },
         xaxis: {
           categories: Object.keys(this.temperatures).map((date) => {
             const d = new Date(date)
@@ -55,11 +66,30 @@ export default {
           }),
           labels: {
             rotate: -45,
-            rotateAlways: false,
+            rotateAlways: isMobile, // Rotera alltid på mobil
+            style: {
+              fontSize: isMobile ? '10px' : '12px',
+            },
           },
         },
         yaxis: {
-          title: { text: 'Temp (°C)' },
+          title: {
+            text: 'Temp (°C)',
+            style: {
+              fontSize: isMobile ? '12px' : '14px',
+            },
+          },
+          labels: {
+            style: {
+              fontSize: isMobile ? '10px' : '12px',
+            },
+          },
+        },
+        legend: {
+          fontSize: isMobile ? '12px' : '14px',
+        },
+        stroke: {
+          width: isMobile ? 2 : 3, // Tunnare linjer på mobil
         },
       }
     },
@@ -67,9 +97,24 @@ export default {
 
   async created() {
     await this.fetchTempData()
+    this.updateChartWidth()
+    window.addEventListener('resize', this.updateChartWidth)
+  },
+
+  beforeUnmount() {
+    window.removeEventListener('resize', this.updateChartWidth)
   },
 
   methods: {
+    updateChartWidth() {
+      // Sätt bredd baserat på skärmstorlek
+      if (window.innerWidth <= 768) {
+        this.chartWidth = '100%'
+      } else {
+        this.chartWidth = '700'
+      }
+    },
+
     async fetchTempData() {
       const url =
         'https://api.open-meteo.com/v1/forecast?latitude=60&longitude=20&past_days=9&daily=temperature_2m_max,temperature_2m_min&timezone=Europe/Mariehamn&forecast_days=0'
@@ -103,9 +148,40 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="temp-container">
     <h2>Temperatur i Mariehamn – senaste 10 dagarna</h2>
-    <div v-if="loading">Laddar data...</div>
-    <apexchart v-else width="700" type="line" :options="chartOptions" :series="series" />
+    <div v-if="loading" class="loading">Laddar data...</div>
+    <div v-else class="chart-wrapper">
+      <apexchart :width="chartWidth" type="line" :options="chartOptions" :series="series" />
+    </div>
   </div>
 </template>
+
+<style scoped>
+.temp-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.chart-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.loading {
+  padding: 2rem;
+  font-size: 1.2rem;
+}
+
+@media (max-width: 768px) {
+  .temp-container {
+    padding: 0 0.5rem;
+  }
+
+  h2 {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+}
+</style>

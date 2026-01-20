@@ -62,7 +62,7 @@ export default {
 }
 </script>
 <template>
-  <apexchart width="500" type="radar" :options="options" :series="series" />
+  <apexchart width="700" type="radar" :options="options" :series="series" />
 
   <div class="inputs">
     <div class="input-row" v-for="(grade, subject) in grades" :key="subject">
